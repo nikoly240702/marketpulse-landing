@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarketPulse — проверь идею прежде чем тратить деньги</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0f0f;
+    --ink2: #3a3a3a;
+    --ink3: #7a7a7a;
+    --bg: #f7f5f0;
+    --bg2: #efecea;
+    --bg3: #e4e0d8;
+    --surface: #fff;
+    --accent: #1a4730;
+    --accent2: #2d6a44;
+    --accent-pale: #e6f0ea;
+    --red: #b83232;
+    --border: #dbd7ce;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Golos Text', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 58px;
+    background: rgba(247,245,240,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.88rem; font-weight: 800;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+  }
+  .logo span { color: var(--accent2); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-link { font-size: 0.85rem; color: var(--ink3); text-decoration: none; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: #fff;
+    padding: 0.45rem 1.1rem; border-radius: 7px;
+    font-size: 0.82rem; font-weight: 600;
+    border: none; text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--accent); }
+
+  .hero-wrap {
+    max-width: 1080px; margin: 0 auto;
+    padding: 96px 2rem 5rem;
+    display: grid; grid-template-columns: 1fr 400px;
+    gap: 5rem; align-items: center;
+  }
+
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.07; letter-spacing: -0.03em;
+    font-weight: 900; margin-bottom: 1.4rem;
+  }
+  h1 em { font-style: normal; color: var(--accent2); }
+
+  .hero-desc {
+    font-size: 1.05rem; color: var(--ink2);
+    line-height: 1.75; margin-bottom: 2rem; max-width: 460px;
+  }
+
+  .hero-cta-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+
+  .btn-main {
+    background: var(--ink); color: #fff;
+    padding: 0.85rem 1.75rem; border-radius: 9px;
+    font-size: 0.95rem; font-weight: 600;
+    border: none; text-decoration: none; display: inline-block;
+    transition: background 0.15s;
+  }
+  .btn-main:hover { background: var(--accent); }
+  .btn-text { font-size: 0.88rem; color: var(--ink3); text-decoration: none; }
+  .btn-text:hover { color: var(--ink); }
+
+  .hero-note {
+    font-size: 0.82rem; color: var(--ink3);
+    border-left: 2px solid var(--border);
+    padding-left: 1rem; line-height: 1.6;
+  }
+
+  .report-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .rc-top {
+    background: var(--ink); color: #fff;
+    padding: 0.9rem 1.15rem;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  }
+  .rc-meta { font-size: 0.62rem; opacity: 0.45; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+  .rc-title { font-size: 0.88rem; font-weight: 600; }
+  .rc-verdict {
+    background: #27ae60; color: #fff;
+    padding: 0.25rem 0.65rem; border-radius: 5px;
+    font-size: 0.7rem; font-weight: 700; white-space: nowrap; margin-top: 2px;
+  }
+  .rc-body { padding: 0.9rem 1.15rem; }
+  .rc-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.5rem; margin-bottom: 0.7rem;
+  }
+  .rc-stat {
+    background: var(--bg); border-radius: 7px; padding: 0.55rem 0.65rem;
+  }
+  .rc-stat-label { font-size: 0.6rem; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1px; }
+  .rc-stat-val { font-size: 0.95rem; font-weight: 700; }
+  .rc-stat-sub { font-size: 0.65rem; color: var(--ink3); }
+  .rc-divider { font-size: 0.6rem; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.06em; margin: 0.65rem 0 0.35rem; }
+  .rc-pain { font-size: 0.75rem; color: var(--ink2); padding: 0.28rem 0; border-bottom: 1px solid var(--bg2); display: flex; gap: 6px; line-height: 1.35; }
+  .rc-pain-n { color: var(--ink3); flex: 0 0 14px; font-size: 0.62rem; margin-top: 2px; }
+  .rc-comp { display: flex; align-items: center; padding: 0.28rem 0; border-bottom: 1px solid var(--bg2); gap: 8px; }
+  .rc-comp-name { font-size: 0.75rem; font-weight: 500; flex: 0 0 90px; }
+  .rc-comp-bar-bg { flex: 1; height: 3px; background: var(--bg3); border-radius: 2px; }
+  .rc-comp-bar { height: 100%; background: var(--accent2); border-radius: 2px; }
+  .rc-comp-price { font-size: 0.68rem; color: var(--ink3); flex: 0 0 48px; text-align: right; }
+  .rc-insight {
+    margin-top: 0.65rem; padding: 0.6rem 0.75rem;
+    background: var(--accent-pale); border-radius: 7px;
+    font-size: 0.72rem; color: var(--accent); line-height: 1.4;
+  }
+
+  .founder-section {
+    max-width: 1080px; margin: 0 auto;
+    padding: 0 2rem 5rem;
+    display: grid; grid-template-columns: 260px 1fr;
+    gap: 4rem; align-items: start;
+  }
+  .founder-left { position: sticky; top: 80px; }
+  .founder-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--bg3); margin-bottom: 0.65rem;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+  .founder-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 2px; }
+  .founder-role { font-size: 0.82rem; color: var(--ink3); }
+  .founder-text { font-size: 1rem; color: var(--ink2); line-height: 1.8; }
+  .founder-text p { margin-bottom: 1.1rem; }
+  .founder-text p:last-child { margin-bottom: 0; }
+  .founder-text strong { color: var(--ink); font-weight: 600; }
+
+  .what-section { background: var(--ink); color: #fff; padding: 5rem 2rem; }
+  .what-inner { max-width: 1080px; margin: 0 auto; }
+  .what-inner h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    font-weight: 800; letter-spacing: -0.025em;
+    line-height: 1.12; margin-bottom: 0.6rem; color: #fff;
+  }
+  .what-sub { font-size: 1rem; color: rgba(255,255,255,0.4); margin-bottom: 3rem; }
+  .what-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .what-item { background: var(--ink); padding: 1.75rem 1.5rem; }
+  .what-item-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 2rem; font-weight: 900;
+    color: rgba(255,255,255,0.1); line-height: 1; margin-bottom: 0.75rem;
+  }
+  .what-item-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; color: #fff; }
+  .what-item-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+  .what-item-sources { margin-top: 0.75rem; font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+  .truth-section {
+    max-width: 1080px; margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; align-items: start;
+  }
+  .truth-left h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-weight: 800; letter-spacing: -0.025em;
+    line-height: 1.15; margin-bottom: 1.25rem;
+  }
+  .truth-left p { font-size: 0.95rem; color: var(--ink2); line-height: 1.75; margin-bottom: 1rem; }
+  .truth-left p:last-child { margin-bottom: 0; }
+  .truth-scenario { padding: 1.25rem 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1rem; }
+  .truth-scenario.bad { background: #fdf2f2; border: 1px solid #f0d0d0; }
+  .truth-scenario.good { background: var(--ink); }
+  .ts-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.85rem; }
+  .truth-scenario.bad .ts-label { color: var(--red); }
+  .truth-scenario.good .ts-label { color: rgba(255,255,255,0.35); }
+  .ts-story { font-size: 0.88rem; line-height: 1.7; }
+  .truth-scenario.bad .ts-story { color: var(--ink2); }
+  .truth-scenario.good .ts-story { color: rgba(255,255,255,0.75); }
+  .ts-result { margin-top: 0.85rem; padding-top: 0.85rem; font-size: 0.82rem; }
+  .truth-scenario.bad .ts-result { color: var(--red); border-top: 1px solid rgba(184,50,50,0.2); }
+  .truth-scenario.good .ts-result { color: rgba(255,255,255,0.45); border-top: 1px solid rgba(255,255,255,0.1); }
+  .ts-result strong { display: block; font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
+  .truth-scenario.bad .ts-result strong { color: var(--red); }
+  .truth-scenario.good .ts-result strong { color: #fff; }
+
+  .pricing-section { background: var(--bg2); padding: 5rem 2rem; }
+  .pricing-inner { max-width: 860px; margin: 0 auto; }
+  .pricing-inner h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    font-weight: 800; letter-spacing: -0.025em;
+    line-height: 1.12; margin-bottom: 0.5rem;
+  }
+  .pricing-note { font-size: 0.9rem; color: var(--ink3); margin-bottom: 2.5rem; }
+  .pricing-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  .pc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; }
+  .pc.main { background: var(--ink); border-color: var(--ink); }
+  .pc-name { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink3); margin-bottom: 1rem; }
+  .pc.main .pc-name { color: rgba(255,255,255,0.35); }
+  .pc-price { font-family: 'Unbounded', sans-serif; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .pc.main .pc-price { color: #fff; }
+  .pc-what { font-size: 0.82rem; color: var(--ink3); margin-bottom: 1.5rem; line-height: 1.5; }
+  .pc.main .pc-what { color: rgba(255,255,255,0.4); }
+  .pc-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
+  .pc.main .pc-divider { background: rgba(255,255,255,0.1); }
+  .pc-features { list-style: none; margin-bottom: 1.75rem; }
+  .pc-features li { font-size: 0.86rem; padding: 0.4rem 0; border-bottom: 1px solid var(--bg2); color: var(--ink2); line-height: 1.4; }
+  .pc-features li:last-child { border-bottom: none; }
+  .pc.main .pc-features li { color: rgba(255,255,255,0.65); border-color: rgba(255,255,255,0.08); }
+  .pc-btn {
+    display: block; width: 100%; padding: 0.8rem; text-align: center;
+    border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: all 0.15s;
+    border: 1.5px solid var(--ink); color: var(--ink); background: transparent;
+  }
+  .pc-btn:hover { background: var(--ink); color: #fff; }
+  .pc.main .pc-btn { background: #fff; color: var(--ink); border-color: #fff; }
+  .pc.main .pc-btn:hover { opacity: 0.88; }
+
+  .faq-section { max-width: 680px; margin: 0 auto; padding: 5rem 2rem; }
+  .faq-section h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem;
+  }
+  .faq-intro { font-size: 0.9rem; color: var(--ink3); margin-bottom: 2.5rem; }
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-q {
+    padding: 1.15rem 0; font-size: 0.95rem; font-weight: 500;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem; cursor: pointer;
+  }
+  .faq-toggle {
+    flex: 0 0 20px; height: 20px;
+    border: 1px solid var(--border); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: var(--ink3); margin-top: 2px;
+    transition: transform 0.2s, background 0.15s;
+  }
+  .faq-item.open .faq-toggle { background: var(--ink); color: #fff; border-color: var(--ink); transform: rotate(45deg); }
+  .faq-a { display: none; padding: 0 0 1.25rem; font-size: 0.88rem; color: var(--ink2); line-height: 1.75; }
+  .faq-item.open .faq-a { display: block; }
+
+  .cta-section { background: var(--accent); color: #fff; padding: 5rem 2rem; text-align: center; }
+  .cta-section h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    font-weight: 800; letter-spacing: -0.025em;
+    line-height: 1.15; color: #fff; margin-bottom: 0.75rem;
+  }
+  .cta-section p { color: rgba(255,255,255,0.55); font-size: 0.95rem; margin-bottom: 2rem; }
+  .btn-cta {
+    background: #fff; color: var(--accent);
+    padding: 0.95rem 2.25rem; border-radius: 9px;
+    font-size: 0.95rem; font-weight: 700;
+    border: none; text-decoration: none; display: inline-block; transition: opacity 0.15s;
+  }
+  .btn-cta:hover { opacity: 0.9; }
+
+  footer { background: var(--ink); padding: 1.75rem 2rem; text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.28); }
+  footer a { color: rgba(255,255,255,0.28); text-decoration: none; }
+  footer a:hover { color: rgba(255,255,255,0.55); }
+
+  @media (max-width: 820px) {
+    .hero-wrap { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 88px; }
+    .founder-section { grid-template-columns: 1fr; gap: 2rem; }
+    .founder-left { position: static; }
+    .what-grid { grid-template-columns: 1fr; }
+    .truth-section { grid-template-columns: 1fr; gap: 2rem; }
+    .pricing-cards { grid-template-columns: 1fr; }
+    .nav-link { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">Market<span>Pulse</span></a>
+  <div class="nav-right">
+    <a href="#how-it-works" class="nav-link">Как работает</a>
+    <a href="#pricing" class="nav-cta">Проверить идею</a>
+  </div>
+</nav>
+
+<div class="hero-wrap">
+  <div>
+    <h1>Есть ли рынок<br>у твоей <em>идеи?</em></h1>
+    <p class="hero-desc">
+      Описываешь идею — получаешь отчёт. Спрос, конкуренты, реальные цены, что раздражает покупателей у существующих продуктов. Не три часа в Wordstat, а десять минут.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#pricing" class="btn-main">Попробовать за 2 900₽</a>
+      <a href="#how-it-works" class="btn-text">Посмотреть пример отчёта ↓</a>
+    </div>
+    <p class="hero-note">
+      Данные из Яндекс Wordstat, Wildberries и Ozon.<br>
+      Никаких опросов — только то, что люди реально ищут и покупают.
+    </p>
+  </div>
+
+  <div class="report-card">
+    <div class="rc-top">
+      <div>
+        <div class="rc-meta">Анализ рынка</div>
+        <div class="rc-title">Детское питание без сахара</div>
+      </div>
+      <div class="rc-verdict">ЗАПУСКАТЬ</div>
+    </div>
+    <div class="rc-body">
+      <div class="rc-stats">
+        <div class="rc-stat">
+          <div class="rc-stat-label">Запросов / мес</div>
+          <div class="rc-stat-val">84 200</div>
+          <div class="rc-stat-sub">в Яндексе</div>
+        </div>
+        <div class="rc-stat">
+          <div class="rc-stat-label">Тренд</div>
+          <div class="rc-stat-val">+31%</div>
+          <div class="rc-stat-sub">за год</div>
+        </div>
+        <div class="rc-stat">
+          <div class="rc-stat-label">Цены на WB</div>
+          <div class="rc-stat-val">290–680₽</div>
+          <div class="rc-stat-sub">рабочий диапазон</div>
+        </div>
+        <div class="rc-stat">
+          <div class="rc-stat-label">Продавцов</div>
+          <div class="rc-stat-val">23</div>
+          <div class="rc-stat-sub">активных</div>
+        </div>
+      </div>
+      <div class="rc-divider">На что жалуются покупатели</div>
+      <div class="rc-pain"><span class="rc-pain-n">1.</span>«Состав непрозрачный, не понять что внутри»</div>
+      <div class="rc-pain"><span class="rc-pain-n">2.</span>«Маленький объём за такие деньги»</div>
+      <div class="rc-pain"><span class="rc-pain-n">3.</span>«Нет разнообразия для разных возрастов»</div>
+      <div class="rc-divider" style="margin-top:0.65rem;">Конкуренты</div>
+      <div class="rc-comp">
+        <span class="rc-comp-name">ФрутоНяня</span>
+        <div class="rc-comp-bar-bg"><div class="rc-comp-bar" style="width:76%"></div></div>
+        <span class="rc-comp-price">от 189₽</span>
+      </div>
+      <div class="rc-comp">
+        <span class="rc-comp-name">Bebi Premium</span>
+        <div class="rc-comp-bar-bg"><div class="rc-comp-bar" style="width:51%"></div></div>
+        <span class="rc-comp-price">от 290₽</span>
+      </div>
+      <div class="rc-comp">
+        <span class="rc-comp-name">Gerber Organic</span>
+        <div class="rc-comp-bar-bg"><div class="rc-comp-bar" style="width:37%"></div></div>
+        <span class="rc-comp-price">от 420₽</span>
+      </div>
+      <div class="rc-insight">
+        Свободная ниша: прозрачный состав + средний ценовой сегмент. Никто из топ-5 явно не делает на это упор.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="founder-section">
+  <div class="founder-left">
+    <div class="founder-avatar">👤</div>
+    <div class="founder-name">Николай</div>
+    <div class="founder-role">Основатель MarketPulse</div>
+  </div>
+  <div class="founder-text">
+    <p>
+      Я сам предприниматель. И у меня было несколько идей, которые казались отличными — до тех пор, пока я не вложил в них деньги.
+    </p>
+    <p>
+      Потом садился, три часа копался в Wordstat, листал Wildberries, читал отзывы — и в итоге всё равно принимал решение на ощупь. Потому что данные были разрозненными, и мозг видел то, что хотел видеть.
+    </p>
+    <p>
+      MarketPulse я сделал для себя. <strong>Описываешь идею, получаешь отчёт с реальными числами.</strong> Не «кажется, есть спрос», а «84 тысячи запросов в месяц, рост 31% за год, вот три незакрытых боли которые можно взять в позиционирование».
+    </p>
+    <p>
+      Если идея слабая — отчёт это покажет. Лучше узнать сейчас за три тысячи рублей, чем через полгода и полмиллиона.
+    </p>
+  </div>
+</div>
+
+<section class="what-section" id="how-it-works">
+  <div class="what-inner">
+    <h2>Что анализирует<br>MarketPulse</h2>
+    <p class="what-sub">Четыре источника одновременно, автоматически</p>
+    <div class="what-grid">
+      <div class="what-item">
+        <div class="what-item-num">01</div>
+        <div class="what-item-title">Реальный спрос</div>
+        <div class="what-item-desc">Сколько людей ищут это прямо сейчас. Тренд за год. Сезонность. Смежные запросы.</div>
+        <div class="what-item-sources">Яндекс Wordstat</div>
+      </div>
+      <div class="what-item">
+        <div class="what-item-num">02</div>
+        <div class="what-item-title">Кто уже продаёт</div>
+        <div class="what-item-desc">Конкуренты, их цены, рейтинги, объёмы продаж. Где рынок плотный, где есть место.</div>
+        <div class="what-item-sources">Wildberries · Ozon</div>
+      </div>
+      <div class="what-item">
+        <div class="what-item-num">03</div>
+        <div class="what-item-title">Что не нравится покупателям</div>
+        <div class="what-item-desc">Тысячи реальных отзывов. На что жалуются, чего не хватает, что хвалят у конкурентов.</div>
+        <div class="what-item-sources">Публичные отзывы WB и Ozon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="truth-section">
+    <div class="truth-left">
+      <h2>Обычно это занимает вечер и не даёт ответа</h2>
+      <p>
+        Открываешь Wordstat — непонятно, какие запросы важные, а какие нет. Идёшь на Wildberries — листаешь, записываешь цены, теряешь нить. Читаешь отзывы — их сотни, всё в кучу.
+      </p>
+      <p>
+        В итоге три часа потрачено, а в голове всё равно «ну, кажется что-то есть». Это не анализ — это иллюзия анализа.
+      </p>
+      <p>
+        MarketPulse делает то же самое, но собирает данные из всех источников сразу и выдаёт одно короткое резюме с вердиктом.
+      </p>
+    </div>
+    <div>
+      <div class="truth-scenario bad">
+        <div class="ts-label">Самостоятельный ресёрч</div>
+        <div class="ts-story">
+          Вторник вечер. Открыл Wordstat, нашёл 12 запросов, выписал в таблицу. Пошёл на Wildberries, посмотрел первые 20 товаров. Начал читать отзывы — через полчаса открыт 41 блокнот, ничего не систематизировано.
+        </div>
+        <div class="ts-result">
+          <strong>3–4 часа</strong>
+          Решение: «Наверное запускаем, посмотрим»
+        </div>
+      </div>
+      <div class="truth-scenario good">
+        <div class="ts-label">MarketPulse</div>
+        <div class="ts-story">
+          Написал идею одной строкой. Через десять минут пришёл PDF: 84к запросов в месяц, тренд растёт, конкуренты не закрывают сегмент «прозрачный состав». Три конкретных незакрытых боли из отзывов.
+        </div>
+        <div class="ts-result">
+          <strong>10 минут</strong>
+          Решение с данными, а не с ощущениями
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <h2>Сколько стоит</h2>
+    <p class="pricing-note">Каждый отчёт — отдельная оплата. Никакой подписки.</p>
+    <div class="pricing-cards">
+      <div class="pc">
+        <div class="pc-name">Базовый</div>
+        <div class="pc-price">2 900₽</div>
+        <div class="pc-what">Чтобы быстро понять — есть рынок или нет</div>
+        <div class="pc-divider"></div>
+        <ul class="pc-features">
+          <li>Объём спроса и тренд</li>
+          <li>Топ-3 конкурента с ценами</li>
+          <li>Вердикт: запускать / не запускать</li>
+          <li>PDF-отчёт</li>
+        </ul>
+        <a href="#" class="pc-btn">Заказать анализ</a>
+      </div>
+      <div class="pc main">
+        <div class="pc-name">Стандарт</div>
+        <div class="pc-price">7 900₽</div>
+        <div class="pc-what">Полная картина перед тем как вкладываться</div>
+        <div class="pc-divider"></div>
+        <ul class="pc-features">
+          <li>Всё из базового</li>
+          <li>Полный конкурентный срез рынка</li>
+          <li>Что раздражает покупателей — из отзывов</li>
+          <li>Незаполненные ниши</li>
+          <li>Рекомендации по позиционированию</li>
+        </ul>
+        <a href="#" class="pc-btn">Заказать анализ</a>
+      </div>
+      <div class="pc">
+        <div class="pc-name">Расширенный</div>
+        <div class="pc-price">14 900₽</div>
+        <div class="pc-what">Если хочешь сравнить несколько направлений</div>
+        <div class="pc-divider"></div>
+        <ul class="pc-features">
+          <li>Всё из стандарта</li>
+          <li>Анализ 3 смежных ниш</li>
+          <li>Сезонность и прогноз</li>
+          <li>С чего начать вход в рынок</li>
+        </ul>
+        <a href="#" class="pc-btn">Заказать анализ</a>
+      </div>
+    </div>
+    <p style="font-size:0.8rem; color:var(--ink3); margin-top:1.25rem; text-align:center;">
+      Оплата картой РФ или СБП через ЮKassa
+    </p>
+  </div>
+</section>
+
+<section class="faq-section">
+  <h2>Вопросы</h2>
+  <p class="faq-intro">Те, что обычно возникают перед покупкой</p>
+
+  <div class="faq-item">
+    <div class="faq-q">Я сам умею гуглить. Зачем мне это? <span class="faq-toggle">+</span></div>
+    <div class="faq-a">Когда гуглишь сам — видишь то, что хочешь найти. Это называется confirmation bias, и с ним сталкиваются все предприниматели. MarketPulse не заинтересован в результате: ему всё равно, хорошая у тебя идея или нет. Плюс он одновременно смотрит Wordstat, Wildberries, Ozon и тысячи отзывов — это несколько часов ручной работы.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Данные реальные или синтетические? <span class="faq-toggle">+</span></div>
+    <div class="faq-a">Реальные. Яндекс Wordstat — это то, что люди набирают прямо сейчас. Wildberries и Ozon — реальные продажи, цены, рейтинги. Отзывы — настоящие тексты покупателей. Никакого ИИ-заполнения данных — только поведенческие сигналы.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Мой продукт не продаётся на маркетплейсах — подойдёт? <span class="faq-toggle">+</span></div>
+    <div class="faq-a">Зависит от категории. Для B2C товаров и услуг с существующим спросом — работает хорошо. Для узкого B2B или совсем новых категорий без аналогов — данных будет меньше, но это само по себе ценная информация: значит рынок ещё не сложился.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Гарантирует ли отчёт что идея выстрелит? <span class="faq-toggle">+</span></div>
+    <div class="faq-a">Нет, и никто не гарантирует. Отчёт показывает есть ли рыночный спрос, кто конкуренты и что не нравится покупателям. Это не замена стратегии и исполнению — это данные для более обоснованного решения.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Можно проверить несколько идей сразу? <span class="faq-toggle">+</span></div>
+    <div class="faq-a">Да, именно для этого и делался продукт. Если у тебя три идеи и непонятно на какую делать ставку — за 8700₽ получишь три базовых отчёта и сможешь сравнить рыночный потенциал.</div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Лучше узнать сейчас<br>за 2 900₽</h2>
+  <p>Чем через полгода и 300 тысяч</p>
+  <a href="#pricing" class="btn-cta">Проверить свою идею →</a>
+</section>
+
+<footer>
+  © 2025 MarketPulse &nbsp;·&nbsp; ИП &nbsp;·&nbsp;
+  <a href="#">Политика конфиденциальности</a> &nbsp;·&nbsp;
+  <a href="#">Публичная оферта</a>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
